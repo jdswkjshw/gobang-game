@@ -1,48 +1,18 @@
 #include <iostream>
 #include <string>
 #include"password.h"
+#include"register.h"
 #include<fstream>
 #include<vector>
 #include <sstream>
 using namespace std;
 
-// Register类 实现文件的创建和读写
-// 文件名称 data.username
-// 文件内容 
-// 第一行 用户名 明文存储
-// 第二行 密码 用用户名加密
-// 第三行 胜利数 用密码加密
-// 第四行 失败数 用密码加密
-// 之后 依次记录登录时间
-class Register : public Password {
-private:
-    fstream file;
-    
-public:
-    Register(UserData d);
-    // 析构函数，关闭文件的指针
-    ~Register();
-    // 创建或打开一个文件，文件名为data.username
-    bool openFile();
-    // 写入一行字符串到文件中
-    bool writeLine(string s);
-    // 读取一行字符串从文件中
-    string readLine();
-    // 将UserData对象的数据写入到文件中
-    bool writeData();
-    // 将文件中的数据读取到UserData对象中
-    bool readData();
-    // 更新UserData对象的登录时间，并写入到文件中
-    bool updateLoginTime();
-};
 
 
-// 在类声明外部，实现构造函数
+
 Register::Register(UserData d) : Password(d) {
-    // 不需要初始化文件流对象
 }
 
-// 在类声明外部，实现析构函数
 Register::~Register() {
     // 如果文件流对象已经打开，关闭文件流对象
     if (file.is_open()) {
@@ -127,7 +97,7 @@ bool Register::readData() {
         string password = decrypt(encryptedPassword, username);
         // 读取胜利数，用密码解密
         string encryptedWins = readLine();
-        string wins = decrypt(encryptedWins.substr(5), password);
+        string wins = decrypt(encryptedWins.substr(5), password); //subtr函数 截取部分字符串
         // 读取失败数，用密码解密
         string encryptedLosses = readLine();
         string losses = decrypt(encryptedLosses.substr(7), password);
