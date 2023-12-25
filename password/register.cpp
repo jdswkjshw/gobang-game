@@ -7,9 +7,6 @@
 #include <sstream>
 using namespace std;
 
-
-
-
 Register::Register(UserData d) : Password(d) {
 }
 
@@ -26,7 +23,7 @@ bool Register::openFile() {
     string filename = data.username;
     // 以读写模式打开一个文件，如果不存在则创建
     file.open(filename, ios::in | ios::out);
-    // 判断文件是否打开成功，返回相应的布尔值
+    // 判断文件是否打开成功
     return file.is_open();
 }
 bool Register::closeFile()
@@ -39,21 +36,19 @@ bool Register::openFile(string username) {
     string filename = username;
     // 以读写模式打开一个文件，如果不存在则创建
     file.open(filename, ios::in | ios::out);
-    // 判断文件是否打开成功，返回相应的布尔值
+    // 判断文件是否打开成功
     return file.is_open();
 }
 
-// 在类声明外部，实现writeLine方法
 bool Register::writeLine(string s) {
     // 如果文件流对象已经打开，向文件中写入一行数据，加上换行符
     if (file.is_open()) {
         file << s << endl;
     }
-    // 判断文件是否写入成功，返回相应的布尔值
+    // 判断文件是否写入成功
     return file.good();
 }
 
-// 在类声明外部，实现readLine方法
 string Register::readLine() {
     // 定义一个字符串，存储读取的结果
     string result = "";
@@ -61,7 +56,6 @@ string Register::readLine() {
     if (file.is_open()) {
         getline(file, result);
     }
-    // 返回读取的字符串
     return result;
 }
 
@@ -99,7 +93,6 @@ bool Register::writeData() {
     return false;
 }
 
-// 在类声明外部，实现readData方法
 bool Register::readData() {
     // 如果文件流对象已经打开，将文件指针移动到文件的开头
     if (file.is_open()) {
@@ -138,7 +131,6 @@ bool Register::readData() {
     return false;
 }
 
-// 在类声明外部，实现updateLoginTime方法
 bool Register::updateLoginTime() {
     // 如果文件流对象已经打开，获取当前的系统时间，转换为字符串
     if (file.is_open()) {

@@ -17,7 +17,7 @@ struct UserData {
 class Password {
 
 public:
-    UserData data = {0,0,0,0,0};
+    UserData data = {0,0,"0","0",0};
     Password(UserData d);
 
     bool judgestring(string s); // 检查字符串是否只包含字母和数字，长度是否不超过20
