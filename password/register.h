@@ -25,13 +25,16 @@ public:
     ~Register();
     // 创建或打开一个文件，文件名为data.username
     bool openFile();
+    bool closeFile();
+    bool openFile(string username);
     // 写入一行字符串到文件中
     bool writeLine(string s);
     // 读取一行字符串从文件中
     string readLine();
     // 将UserData对象的数据写入到文件中
+    // 按照要求加密数据，但不改变对象中的值
     bool writeData();
-    // 将文件中的数据读取到UserData对象中
+    // 将文件中的数据解密并读取到UserData对象中
     bool readData();
     // 更新UserData对象的登录时间，并写入到文件中
     bool updateLoginTime();

@@ -20,10 +20,23 @@ Register::~Register() {
     }
 }
 
-// 在类声明外部，实现openFile方法
+
 bool Register::openFile() {
     // 获取文件名
     string filename = data.username;
+    // 以读写模式打开一个文件，如果不存在则创建
+    file.open(filename, ios::in | ios::out);
+    // 判断文件是否打开成功，返回相应的布尔值
+    return file.is_open();
+}
+bool Register::closeFile()
+{
+    file.close();
+    return !file.is_open();
+}
+bool Register::openFile(string username) {
+    // 获取文件名
+    string filename = username;
     // 以读写模式打开一个文件，如果不存在则创建
     file.open(filename, ios::in | ios::out);
     // 判断文件是否打开成功，返回相应的布尔值
@@ -52,7 +65,7 @@ string Register::readLine() {
     return result;
 }
 
-// 在类声明外部，实现writeData方法
+
 bool Register::writeData() {
     // 如果文件流对象已经打开，关闭它
     if (file.is_open()) {
@@ -69,13 +82,14 @@ bool Register::writeData() {
         string encryptedPassword = encrypt(data.password, data.username);
         bool b2 = writeLine(encryptedPassword);
         // 写入胜利数，用密码加密
-        string encryptedWins = "Wins " + encrypt(data.wins, data.password);
+        string encryptedWins = encrypt("Wins ", data.password) + encrypt(data.wins, data.password);
         bool b3 = writeLine(encryptedWins);
         // 写入失败数，用密码加密
-        string encryptedLosses = "Losses " + encrypt(data.losses, data.password);
+        string encryptedLosses = encrypt("Losses ", data.password) + encrypt(data.losses, data.password);
         bool b4 = writeLine(encryptedLosses);
+        bool b5 = updateLoginTime();
         // 如果有任何一步写入失败，返回false
-        if (!b1 || !b2 || !b3 || !b4) {
+        if (!b1 || !b2 || !b3 || !b4||!b5) {
             return false;
         }
         // 如果全部写入成功，返回true
@@ -130,14 +144,17 @@ bool Register::updateLoginTime() {
     if (file.is_open()) {
         time_t t = time(NULL);
         char buffer[20];
-        strftime(buffer, 20, "%Y-%m-%d %H:%M:%S", localtime(&t));
+        tm tm; // 定义一个tm结构体
+        localtime_s(&tm, &t); // 调用localtime_s函数
+        strftime(buffer, 20, "%Y-%m-%d %H:%M:%S", &tm);
         string currentTime = string(buffer);
-        // 将当前时间赋值给UserData对象的登录时间
-        data.loginTime = currentTime;
+
         // 将文件指针移动到文件的末尾
         file.seekp(0, ios::end);
         // 如果UserData对象的登录时间为空，直接写入当前时间
         if (data.loginTime == "") {
+            // 将当前时间赋值给UserData对象的登录时间
+            data.loginTime = currentTime;
             bool b = writeLine(currentTime);
             // 如果写入失败，返回false
             if (!b) {

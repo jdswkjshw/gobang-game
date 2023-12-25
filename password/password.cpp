@@ -11,7 +11,8 @@ bool Password::judgestring(string s) {
             return false;
         }
     }
-    if (data.username.length() > 20 || data.password.length() > 20) return false;
+    if (data.username.length() > 20 || data.password.length() > 20) 
+        return false;
     return true;
 }
 
