@@ -17,9 +17,11 @@ private:
 public:
 	Login(UserData d);
 	// 从键盘输入获取inname inpassword
+	// 后续需改为从输入框获得
 	bool getinfo();
 	
 	// 打开并读取文件
 	// 校验用户名和密码
+	// 需要添加弹出错误窗口功能
 	int checkuser();
 };

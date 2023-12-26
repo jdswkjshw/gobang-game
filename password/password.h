@@ -14,6 +14,7 @@ struct UserData {
 
 // Password类 实现维多利亚加密解密 检查username password合法性
 // username password合法：仅由数字和字母组成，长度不超过20
+// 需要添加弹出输入不合法功能
 class Password {
 
 public:
