@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include"password.h"
+#include<winuser.h>
 using namespace std;
 
 Password::Password(UserData d) :data(d) {}
@@ -8,6 +9,13 @@ Password::Password(UserData d) :data(d) {}
 bool Password::judgestring(string s) {
     for (char c : s) {
         if (!isalnum(c)) {
+            int msgboxID = MessageBox(
+                NULL,
+                (LPCWSTR)L"注册失败",
+                (LPCWSTR)L"用户名和密码应仅包含数字大小写字母！",
+                MB_ICONWARNING | MB_RETRYCANCEL | MB_DEFBUTTON2
+            );
+
             return false;
         }
     }

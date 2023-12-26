@@ -23,5 +23,5 @@ public:
 	// 打开并读取文件
 	// 校验用户名和密码
 	// 需要添加弹出错误窗口功能
-	int checkuser();
+	bool checkuser();
 };

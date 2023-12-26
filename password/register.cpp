@@ -5,6 +5,8 @@
 #include<fstream>
 #include<vector>
 #include <sstream>
+#include<io.h>
+#include<graphics.h>
 using namespace std;
 
 Register::Register(UserData d) : Password(d) {
@@ -34,6 +36,16 @@ bool Register::closeFile()
 bool Register::openFile(string username) {
     // 获取文件名
     string filename = username;
+    if (access(filename.c_str(), 0) == 1) {
+        // 文件存在，返回false，表示用户名已被注册
+        MessageBox(
+            NULL,
+            (LPCWSTR)L"此用户名已被注册！",
+            (LPCWSTR)L"注册界面",
+            MB_ICONWARNING | MB_OK
+        );
+        return false;
+    }
     // 以读写模式打开一个文件，如果不存在则创建
     file.open(filename, ios::in | ios::out);
     // 判断文件是否打开成功
@@ -90,6 +102,39 @@ bool Register::writeData() {
         return true;
     }
     // 如果文件流对象没有打开，返回false
+    return false;
+}
+
+bool Register::writeData_close()
+{
+    // 如果文件流对象已经打开，关闭它
+    if (file.is_open()) {
+        file.close();
+    }
+    // 以读写和截断模式打开一个文件，如果不存在则创建
+    file.open(data.username, ios::in | ios::out | ios::trunc);
+    // 如果文件流对象已经打开，将文件指针移动到文件的开头
+    if (file.is_open()) {
+        file.seekp(0, ios::beg);
+        // 写入用户名，明文存储
+        bool b1 = writeLine(data.username);
+        // 写入密码，用用户名加密
+        string encryptedPassword = encrypt(data.password, data.username);
+        bool b2 = writeLine(encryptedPassword);
+        // 写入胜利数，用密码加密
+        string encryptedWins = encrypt("Wins ", data.password) + encrypt(data.wins, data.password);
+        bool b3 = writeLine(encryptedWins);
+        // 写入失败数，用密码加密
+        string encryptedLosses = encrypt("Losses ", data.password) + encrypt(data.losses, data.password);
+        bool b4 = writeLine(encryptedLosses);
+        bool b5 = writeLoginTime();
+        // 如果有任何一步写入失败，返回false
+        if (!b1 || !b2 || !b3 || !b4 || !b5) {
+            return false;
+        }
+        // 如果全部写入成功，返回true
+        return true;
+    }
     return false;
 }
 
@@ -180,6 +225,39 @@ bool Register::updateLoginTime() {
                 return false;
             }
         }
+        // 如果写入成功，返回true
+        return true;
+    }
+    // 如果文件流对象没有打开，返回false
+    return false;
+}
+
+bool Register::writeLoginTime()
+{
+    if (file.is_open()) {
+
+        // 将文件指针移动到文件的末尾
+        file.seekp(0, ios::end);
+        
+        // 依次写入登录时间中的每一条
+            // 将登录时间分割为多个字符串，按换行符分割
+            vector<string> times;
+            // 创建一个空的stringstream对象
+            stringstream ss;
+            // 向stringstream对象输入data.loginTime字符串
+            ss << data.loginTime;
+            string line;
+            while (getline(ss, line, '\n')) {
+                times.push_back(line);
+            }
+            // 遍历每个字符串，写入到文件中
+            for (string time : times) {
+                bool b = writeLine(time);
+                // 如果写入失败，返回false
+                if (!b) {
+                    return false;
+                }
+            }
         // 如果写入成功，返回true
         return true;
     }
